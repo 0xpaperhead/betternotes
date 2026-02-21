@@ -29,6 +29,20 @@
   <developer id="com.github.0xpaperhead">
     <name>0xpaperhead</name>
   </developer>
+  <screenshots>
+    <screenshot type="default">
+      <caption>Main overview with colorful note cards</caption>
+      <image>https://raw.githubusercontent.com/0xpaperhead/betternotes/main/data/screenshots/01-overview.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>Editing a sticky note with rich text formatting</caption>
+      <image>https://raw.githubusercontent.com/0xpaperhead/betternotes/main/data/screenshots/02-editing.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>Dark mode support</caption>
+      <image>https://raw.githubusercontent.com/0xpaperhead/betternotes/main/data/screenshots/03-dark-mode.png</image>
+    </screenshot>
+  </screenshots>
   <content_rating type="oars-1.1" />
   <releases>
     <release version="0.1.0" date="2026-02-21">

@@ -177,9 +177,13 @@ class MainWindow(Adw.ApplicationWindow):
 
         self._toolbar_view.set_content(self._view_stack)
 
+        # Toast overlay (must wrap everything for toasts to display)
+        self._toast_overlay = Adw.ToastOverlay()
+        self._toast_overlay.set_child(self._toolbar_view)
+
         # FAB overlay
         overlay = Gtk.Overlay()
-        overlay.set_child(self._toolbar_view)
+        overlay.set_child(self._toast_overlay)
 
         fab = Gtk.Button(
             icon_name='list-add-symbolic',
@@ -384,14 +388,4 @@ class MainWindow(Adw.ApplicationWindow):
         if button_label and callback:
             toast.set_button_label(button_label)
             toast.connect('button-clicked', lambda t: callback(callback_data))
-        # Find the toast overlay — we need to add one
-        self._get_toast_overlay().add_toast(toast)
-
-    def _get_toast_overlay(self):
-        if not hasattr(self, '_toast_overlay'):
-            # Wrap content in toast overlay
-            current_content = self.get_content()
-            self._toast_overlay = Adw.ToastOverlay()
-            self._toast_overlay.set_child(current_content)
-            self.set_content(self._toast_overlay)
-        return self._toast_overlay
+        self._toast_overlay.add_toast(toast)
