@@ -1,0 +1,21 @@
+pkgbase = betternotes
+	pkgdesc = Beautiful sticky notes for your Linux desktop
+	pkgver = 0.1.0
+	pkgrel = 1
+	url = https://github.com/0xpaperhead/betternotes
+	arch = x86_64
+	arch = aarch64
+	license = GPL-3.0-or-later
+	makedepends = meson
+	makedepends = ninja
+	makedepends = gettext
+	makedepends = glib2
+	depends = python
+	depends = python-gobject
+	depends = gtk4
+	depends = libadwaita
+	depends = sqlite
+	source = betternotes-0.1.0.tar.gz::https://github.com/0xpaperhead/betternotes/archive/v0.1.0.tar.gz
+	sha256sums = SKIP
+
+pkgname = betternotes

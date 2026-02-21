@@ -1,0 +1,34 @@
+# Maintainer: 0xpaperhead <0xpaperhead@users.noreply.github.com>
+pkgname=betternotes
+pkgver=0.1.0
+pkgrel=1
+pkgdesc="Beautiful sticky notes for your Linux desktop"
+arch=('x86_64' 'aarch64')
+url="https://github.com/0xpaperhead/betternotes"
+license=('GPL-3.0-or-later')
+depends=(
+    'python'
+    'python-gobject'
+    'gtk4'
+    'libadwaita'
+    'sqlite'
+)
+makedepends=(
+    'meson'
+    'ninja'
+    'gettext'
+    'glib2'
+)
+source=("$pkgname-$pkgver.tar.gz::https://github.com/0xpaperhead/betternotes/archive/v$pkgver.tar.gz")
+sha256sums=('SKIP')
+
+build() {
+    cd "$pkgname-$pkgver"
+    arch-meson build
+    meson compile -C build
+}
+
+package() {
+    cd "$pkgname-$pkgver"
+    meson install -C build --destdir "$pkgdir"
+}

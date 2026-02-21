@@ -23,14 +23,15 @@
     </ul>
   </description>
   <launchable type="desktop-id">com.github.souren.BetterNotes.desktop</launchable>
-  <url type="homepage">https://github.com/souren/betternotes</url>
-  <url type="bugtracker">https://github.com/souren/betternotes/issues</url>
-  <developer id="com.github.souren">
-    <name>Souren</name>
+  <url type="homepage">https://github.com/0xpaperhead/betternotes</url>
+  <url type="bugtracker">https://github.com/0xpaperhead/betternotes/issues</url>
+  <url type="vcs-browser">https://github.com/0xpaperhead/betternotes</url>
+  <developer id="com.github.0xpaperhead">
+    <name>0xpaperhead</name>
   </developer>
   <content_rating type="oars-1.1" />
   <releases>
-    <release version="0.1.0" date="2026-02-20">
+    <release version="0.1.0" date="2026-02-21">
       <description>
         <p>Initial release of BetterNotes.</p>
       </description>

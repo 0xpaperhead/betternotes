@@ -1,0 +1,61 @@
+name: betternotes
+version: '0.1.0'
+summary: Beautiful sticky notes for your Linux desktop
+description: |
+  BetterNotes is a full-featured sticky notes application built with GTK4
+  and Libadwaita. Create colorful notes that stay on top of your desktop,
+  organize them with tags, format your text with rich editing, and find
+  anything instantly with full-text search.
+
+  Features:
+  - 8 vibrant note colors
+  - Rich text editing (bold, italic, underline, strikethrough, bullet lists)
+  - Full-text search powered by SQLite FTS5
+  - Tags and categories with filtering
+  - Trash with restore and 30-day auto-purge
+  - Always-on-top sticky note windows
+  - Dark mode support via Libadwaita
+  - Keyboard shortcuts
+
+grade: stable
+confinement: strict
+base: core24
+license: GPL-3.0-or-later
+
+architectures:
+  - build-on: [amd64]
+  - build-on: [arm64]
+
+apps:
+  betternotes:
+    command: usr/local/bin/betternotes
+    extensions: [gnome]
+    environment:
+      GDK_BACKEND: x11
+    plugs:
+      - desktop
+      - desktop-legacy
+      - wayland
+      - x11
+      - unity7
+
+parts:
+  betternotes:
+    plugin: meson
+    source: .
+    source-type: local
+    meson-parameters:
+      - --prefix=/usr/local
+    build-packages:
+      - python3
+      - libgtk-4-dev
+      - libadwaita-1-dev
+      - gettext
+      - libglib2.0-dev-bin
+    stage-packages:
+      - python3
+      - python3-gi
+      - gir1.2-gtk-4.0
+      - gir1.2-adw-1
+      - libgtk-4-1
+      - libadwaita-1-0
