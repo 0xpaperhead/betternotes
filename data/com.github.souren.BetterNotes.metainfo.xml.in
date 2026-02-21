@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>com.github.souren.BetterNotes</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0-or-later</project_license>
+  <name>BetterNotes</name>
+  <summary>Sticky notes for your desktop</summary>
+  <description>
+    <p>
+      BetterNotes is a full-featured sticky notes application for GNOME.
+      Create colorful notes, organize them with tags, and find them
+      instantly with full-text search.
+    </p>
+    <p>Features:</p>
+    <ul>
+      <li>8 vibrant note colors</li>
+      <li>Rich text editing (bold, italic, underline, strikethrough, bullet lists)</li>
+      <li>Full-text search powered by SQLite FTS5</li>
+      <li>Tags and categories with filtering</li>
+      <li>Trash with restore and auto-purge</li>
+      <li>Dark mode support</li>
+      <li>Keyboard shortcuts</li>
+    </ul>
+  </description>
+  <launchable type="desktop-id">com.github.souren.BetterNotes.desktop</launchable>
+  <url type="homepage">https://github.com/souren/betternotes</url>
+  <url type="bugtracker">https://github.com/souren/betternotes/issues</url>
+  <developer id="com.github.souren">
+    <name>Souren</name>
+  </developer>
+  <content_rating type="oars-1.1" />
+  <releases>
+    <release version="0.1.0" date="2026-02-20">
+      <description>
+        <p>Initial release of BetterNotes.</p>
+      </description>
+    </release>
+  </releases>
+  <requires>
+    <display_length compare="ge">360</display_length>
+  </requires>
+  <supports>
+    <control>pointing</control>
+    <control>keyboard</control>
+    <control>touch</control>
+  </supports>
+</component>

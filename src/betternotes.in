@@ -1,0 +1,40 @@
+#!@PYTHON@
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+import os
+import sys
+import signal
+import locale
+import gettext
+
+VERSION = '@VERSION@'
+pkgdatadir = '@pkgdatadir@'
+localedir = '@localedir@'
+
+sys.path.insert(1, pkgdatadir)
+signal.signal(signal.SIGINT, signal.SIG_DFL)
+
+locale.bindtextdomain('betternotes', localedir)
+locale.textdomain('betternotes')
+gettext.install('betternotes', localedir)
+
+if __name__ == '__main__':
+    # Force X11 backend so we can set always-on-top on note windows.
+    # On Wayland, this runs under XWayland transparently.
+    os.environ.setdefault('GDK_BACKEND', 'x11')
+
+    import gi
+
+    gi.require_version('Gtk', '4.0')
+    gi.require_version('Adw', '1')
+
+    from gi.repository import Gio
+
+    # Try to load compiled gresource, fall back to filesystem
+    gresource_path = os.path.join(pkgdatadir, 'betternotes.gresource')
+    if os.path.exists(gresource_path):
+        resource = Gio.Resource.load(gresource_path)
+        resource._register()
+
+    from betternotes.application import BetterNotesApp
+    sys.exit(BetterNotesApp(version=VERSION).run(sys.argv))

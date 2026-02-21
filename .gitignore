@@ -1,0 +1,29 @@
+# Build
+build/
+build-flatpak/
+builddir/
+_build/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Meson
+subprojects/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Flatpak
+.flatpak-builder/
+repo/
+
+# Data
+*.db
+*.db-journal
+*.db-wal

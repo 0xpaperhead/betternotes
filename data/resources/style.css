@@ -1,0 +1,332 @@
+/* BetterNotes Stylesheet */
+
+/* Main window */
+.notes-grid flowboxchild {
+    padding: 8px;
+}
+
+/* ===== Note Cards ===== */
+.note-card {
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15), 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 200ms ease;
+    /* Force dark text on light card backgrounds */
+    color: #1a1a1a;
+}
+
+.note-card:hover {
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.22), 0 3px 8px rgba(0, 0, 0, 0.14);
+}
+
+.note-card-content {
+    padding: 14px;
+}
+
+.note-card-title {
+    font-weight: bold;
+    font-size: 14px;
+    margin-bottom: 2px;
+    color: #1a1a1a;
+}
+
+.note-card-preview {
+    font-size: 12px;
+    color: #333333;
+}
+
+.note-card-tags {
+    font-size: 10px;
+    font-style: italic;
+    color: #555555;
+    margin-top: 4px;
+}
+
+/* Dark mode: lighter text on dark card backgrounds */
+.dark .note-card {
+    color: #e0e0e0;
+}
+
+.dark .note-card-title {
+    color: #e0e0e0;
+}
+
+.dark .note-card-preview {
+    color: #bbbbbb;
+}
+
+.dark .note-card-tags {
+    color: #999999;
+}
+
+/* "..." more indicator bar at bottom of card */
+.note-card-more {
+    padding: 4px 0;
+    border-radius: 0 0 16px 16px;
+}
+
+.note-card-more-label {
+    font-size: 16px;
+    font-weight: bold;
+    opacity: 0.4;
+}
+
+/* Per-color "more" bar — light */
+.note-card-more-yellow  { background-color: shade(#FFF9C4, 0.92); }
+.note-card-more-blue    { background-color: shade(#BBDEFB, 0.92); }
+.note-card-more-green   { background-color: shade(#C8E6C9, 0.92); }
+.note-card-more-pink    { background-color: shade(#F8BBD0, 0.92); }
+.note-card-more-orange  { background-color: shade(#FFE0B2, 0.92); }
+.note-card-more-purple  { background-color: shade(#E1BEE7, 0.92); }
+.note-card-more-red     { background-color: shade(#FFCDD2, 0.92); }
+.note-card-more-teal    { background-color: shade(#B2DFDB, 0.92); }
+
+/* Per-color "more" bar — dark */
+.dark .note-card-more-yellow  { background-color: shade(#4A4520, 1.2); }
+.dark .note-card-more-blue    { background-color: shade(#1A3A5C, 1.2); }
+.dark .note-card-more-green   { background-color: shade(#1B3D1E, 1.2); }
+.dark .note-card-more-pink    { background-color: shade(#4A1B30, 1.2); }
+.dark .note-card-more-orange  { background-color: shade(#4A3018, 1.2); }
+.dark .note-card-more-purple  { background-color: shade(#3A1B4A, 1.2); }
+.dark .note-card-more-red     { background-color: shade(#4A1B1B, 1.2); }
+.dark .note-card-more-teal    { background-color: shade(#1B3D3A, 1.2); }
+
+/* ===== Note Window ===== */
+
+/* Force dark text and icons on light note-color backgrounds */
+.note-color-yellow,
+.note-color-blue,
+.note-color-green,
+.note-color-pink,
+.note-color-orange,
+.note-color-purple,
+.note-color-red,
+.note-color-teal {
+    color: #1a1a1a;
+    -gtk-icon-filter: brightness(0.2);
+}
+
+.note-color-yellow headerbar,
+.note-color-blue headerbar,
+.note-color-green headerbar,
+.note-color-pink headerbar,
+.note-color-orange headerbar,
+.note-color-purple headerbar,
+.note-color-red headerbar,
+.note-color-teal headerbar {
+    color: #1a1a1a;
+    -gtk-icon-filter: brightness(0.2);
+}
+
+/* Dark mode note windows: light text */
+.dark .note-color-yellow,
+.dark .note-color-blue,
+.dark .note-color-green,
+.dark .note-color-pink,
+.dark .note-color-orange,
+.dark .note-color-purple,
+.dark .note-color-red,
+.dark .note-color-teal {
+    color: #e0e0e0;
+    -gtk-icon-filter: none;
+}
+
+.dark .note-color-yellow headerbar,
+.dark .note-color-blue headerbar,
+.dark .note-color-green headerbar,
+.dark .note-color-pink headerbar,
+.dark .note-color-orange headerbar,
+.dark .note-color-purple headerbar,
+.dark .note-color-red headerbar,
+.dark .note-color-teal headerbar {
+    color: #e0e0e0;
+    -gtk-icon-filter: none;
+}
+
+.note-title-entry {
+    font-size: 18px;
+    font-weight: bold;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    padding: 8px 12px;
+    color: #1a1a1a;
+}
+
+.note-title-entry:focus {
+    box-shadow: none;
+    outline: none;
+}
+
+.dark .note-title-entry {
+    color: #e0e0e0;
+}
+
+.note-text-view {
+    padding: 12px;
+    font-size: 14px;
+    background: transparent;
+    color: #2a2a2a;
+}
+
+.dark .note-text-view {
+    color: #d0d0d0;
+}
+
+/* Rich text toolbar */
+.rich-text-toolbar {
+    padding: 4px 8px;
+}
+
+.rich-text-toolbar button {
+    min-width: 32px;
+    min-height: 32px;
+    padding: 4px;
+    color: #333333;
+    -gtk-icon-filter: brightness(0.2);
+}
+
+.dark .rich-text-toolbar button {
+    color: #cccccc;
+    -gtk-icon-filter: none;
+}
+
+.formatting-active {
+    background-color: alpha(@accent_color, 0.3);
+}
+
+/* Tag chips */
+.tag-chip {
+    border-radius: 16px;
+    padding: 4px 12px;
+    font-size: 12px;
+    min-height: 24px;
+}
+
+.tag-chip-active {
+    background-color: @accent_bg_color;
+    color: @accent_fg_color;
+}
+
+/* Search bar */
+.search-entry {
+    min-width: 300px;
+}
+
+/* Empty state */
+.empty-state {
+    opacity: 0.5;
+}
+
+.empty-state-icon {
+    opacity: 0.3;
+}
+
+/* FAB (Floating Action Button) */
+.fab {
+    border-radius: 50%;
+    min-width: 56px;
+    min-height: 56px;
+    padding: 0;
+    background-color: @accent_bg_color;
+    color: @accent_fg_color;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.fab:hover {
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+}
+
+/* Trash banner */
+.trash-banner {
+    background-color: alpha(@warning_color, 0.1);
+    padding: 8px 16px;
+    border-bottom: 1px solid alpha(@warning_color, 0.3);
+}
+
+/* ===== Color note backgrounds — light mode ===== */
+.note-color-yellow { background-color: #FFF9C4; }
+.note-color-yellow headerbar { background-color: #FFE082; }
+.note-color-yellow-card { background-color: #FFF9C4; }
+
+.note-color-blue { background-color: #BBDEFB; }
+.note-color-blue headerbar { background-color: #90CAF9; }
+.note-color-blue-card { background-color: #BBDEFB; }
+
+.note-color-green { background-color: #C8E6C9; }
+.note-color-green headerbar { background-color: #A5D6A7; }
+.note-color-green-card { background-color: #C8E6C9; }
+
+.note-color-pink { background-color: #F8BBD0; }
+.note-color-pink headerbar { background-color: #F48FB1; }
+.note-color-pink-card { background-color: #F8BBD0; }
+
+.note-color-orange { background-color: #FFE0B2; }
+.note-color-orange headerbar { background-color: #FFCC80; }
+.note-color-orange-card { background-color: #FFE0B2; }
+
+.note-color-purple { background-color: #E1BEE7; }
+.note-color-purple headerbar { background-color: #CE93D8; }
+.note-color-purple-card { background-color: #E1BEE7; }
+
+.note-color-red { background-color: #FFCDD2; }
+.note-color-red headerbar { background-color: #EF9A9A; }
+.note-color-red-card { background-color: #FFCDD2; }
+
+.note-color-teal { background-color: #B2DFDB; }
+.note-color-teal headerbar { background-color: #80CBC4; }
+.note-color-teal-card { background-color: #B2DFDB; }
+
+/* ===== Color note backgrounds — dark mode ===== */
+.dark .note-color-yellow { background-color: #4A4520; }
+.dark .note-color-yellow headerbar { background-color: #6B5F1E; }
+.dark .note-color-yellow-card { background-color: #4A4520; }
+
+.dark .note-color-blue { background-color: #1A3A5C; }
+.dark .note-color-blue headerbar { background-color: #1B3F6B; }
+.dark .note-color-blue-card { background-color: #1A3A5C; }
+
+.dark .note-color-green { background-color: #1B3D1E; }
+.dark .note-color-green headerbar { background-color: #1E5023; }
+.dark .note-color-green-card { background-color: #1B3D1E; }
+
+.dark .note-color-pink { background-color: #4A1B30; }
+.dark .note-color-pink headerbar { background-color: #6B1E45; }
+.dark .note-color-pink-card { background-color: #4A1B30; }
+
+.dark .note-color-orange { background-color: #4A3018; }
+.dark .note-color-orange headerbar { background-color: #6B4420; }
+.dark .note-color-orange-card { background-color: #4A3018; }
+
+.dark .note-color-purple { background-color: #3A1B4A; }
+.dark .note-color-purple headerbar { background-color: #4A1E6B; }
+.dark .note-color-purple-card { background-color: #3A1B4A; }
+
+.dark .note-color-red { background-color: #4A1B1B; }
+.dark .note-color-red headerbar { background-color: #6B1E1E; }
+.dark .note-color-red-card { background-color: #4A1B1B; }
+
+.dark .note-color-teal { background-color: #1B3D3A; }
+.dark .note-color-teal headerbar { background-color: #1E5046; }
+.dark .note-color-teal-card { background-color: #1B3D3A; }
+
+/* ===== Color picker buttons ===== */
+.color-button {
+    border-radius: 50%;
+    min-width: 28px;
+    min-height: 28px;
+    padding: 0;
+    border: 2px solid transparent;
+}
+
+.color-button:checked {
+    border-color: @accent_color;
+}
+
+.color-yellow { background-color: #FFE082; }
+.color-blue { background-color: #90CAF9; }
+.color-green { background-color: #A5D6A7; }
+.color-pink { background-color: #F48FB1; }
+.color-orange { background-color: #FFCC80; }
+.color-purple { background-color: #CE93D8; }
+.color-red { background-color: #EF9A9A; }
+.color-teal { background-color: #80CBC4; }
