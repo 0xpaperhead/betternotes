@@ -301,8 +301,8 @@ xlib.XCloseDisplay(dpy)
             return
 
         # Get line bounds by line number (safe across modifications)
-        line_start = self._buffer.get_iter_at_line(line_num)
-        line_end = self._buffer.get_iter_at_line(line_num)
+        _, line_start = self._buffer.get_iter_at_line(line_num)
+        _, line_end = self._buffer.get_iter_at_line(line_num)
         if not line_end.ends_line():
             line_end.forward_to_line_end()
 
@@ -310,18 +310,17 @@ xlib.XCloseDisplay(dpy)
             self._buffer.remove_tag(bullet_tag, line_start, line_end)
             text = self._buffer.get_text(line_start, line_end, True)
             if text.startswith('\u2022 '):
-                prefix_end = self._buffer.get_iter_at_line(line_num)
+                _, prefix_end = self._buffer.get_iter_at_line(line_num)
                 prefix_end.forward_chars(2)
-                self._buffer.delete(
-                    self._buffer.get_iter_at_line(line_num), prefix_end
-                )
+                _, delete_start = self._buffer.get_iter_at_line(line_num)
+                self._buffer.delete(delete_start, prefix_end)
         else:
             # Insert bullet prefix first
-            line_start = self._buffer.get_iter_at_line(line_num)
+            _, line_start = self._buffer.get_iter_at_line(line_num)
             self._buffer.insert(line_start, '\u2022 ')
             # Re-fetch iterators after modification
-            line_start = self._buffer.get_iter_at_line(line_num)
-            line_end = self._buffer.get_iter_at_line(line_num)
+            _, line_start = self._buffer.get_iter_at_line(line_num)
+            _, line_end = self._buffer.get_iter_at_line(line_num)
             if not line_end.ends_line():
                 line_end.forward_to_line_end()
             self._buffer.apply_tag(bullet_tag, line_start, line_end)
