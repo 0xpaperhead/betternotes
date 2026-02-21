@@ -593,6 +593,11 @@ class MainWindow(Adw.ApplicationWindow):
             btn.add_css_class('tag-chip')
             btn.set_active(self._current_tag_filter == tag.name)
             btn.connect('toggled', self._on_tag_filter, tag.name)
+
+            gesture = Gtk.GestureClick(button=Gdk.BUTTON_SECONDARY)
+            gesture.connect('pressed', self._on_tag_right_click, tag.name, btn)
+            btn.add_controller(gesture)
+
             self._tag_bar.append(btn)
 
     def _on_tag_filter(self, btn, tag_name):
@@ -607,6 +612,37 @@ class MainWindow(Adw.ApplicationWindow):
                 child.set_active(False)
             child = child.get_next_sibling()
         self._refresh_notes()
+
+    def _on_tag_right_click(self, gesture, n_press, x, y, tag_name, btn):
+        popover = Gtk.Popover()
+        popover.set_parent(btn)
+
+        delete_btn = Gtk.Button(label='Delete Tag')
+        delete_btn.add_css_class('flat')
+        delete_btn.connect('clicked', lambda b: (popover.popdown(), self._on_delete_tag(tag_name)))
+        popover.set_child(delete_btn)
+
+        popover.connect('closed', lambda p: p.unparent())
+        popover.popup()
+
+    def _on_delete_tag(self, tag_name):
+        dialog = Adw.AlertDialog(
+            heading=f'Delete Tag \u2018{tag_name}\u2019?',
+            body='This will remove the tag from all notes.',
+        )
+        dialog.add_response('cancel', 'Cancel')
+        dialog.add_response('delete', 'Delete')
+        dialog.set_response_appearance('delete', Adw.ResponseAppearance.DESTRUCTIVE)
+        dialog.connect('response', self._on_delete_tag_confirmed, tag_name)
+        dialog.present(self)
+
+    def _on_delete_tag_confirmed(self, dialog, response, tag_name):
+        if response == 'delete':
+            self._app.store.delete_tag(tag_name)
+            if self._current_tag_filter == tag_name:
+                self._current_tag_filter = None
+            self._refresh_tags()
+            self._refresh_notes()
 
     def _on_note_activated(self, card, note_id):
         self._app.open_note(note_id)
