@@ -11,11 +11,12 @@ PREVIEW_MAX_CHARS = 80
 PREVIEW_MAX_LINES = 5
 
 
-class NoteCard(Gtk.Frame):
+class NoteCard(Gtk.Overlay):
     """Fixed-size square card widget for displaying a note in the grid."""
 
     __gsignals__ = {
         'activated': (GObject.SignalFlags.RUN_LAST, None, (str,)),
+        'long-pressed': (GObject.SignalFlags.RUN_LAST, None, (str,)),
         'trash-requested': (GObject.SignalFlags.RUN_LAST, None, (str,)),
         'restore-requested': (GObject.SignalFlags.RUN_LAST, None, (str,)),
         'delete-requested': (GObject.SignalFlags.RUN_LAST, None, (str,)),
@@ -25,6 +26,7 @@ class NoteCard(Gtk.Frame):
         super().__init__(**kwargs)
         self._note = note
         self._is_trash = is_trash
+        self._selected = False
 
         # Fixed square size, don't stretch, clip overflow
         self.set_size_request(CARD_SIZE, CARD_SIZE)
@@ -32,9 +34,12 @@ class NoteCard(Gtk.Frame):
         self.set_valign(Gtk.Align.START)
         self.set_halign(Gtk.Align.START)
 
-        # Card styling
-        self.add_css_class('note-card')
-        self.add_css_class(f'note-color-{note.color}-card')
+        # Frame as the base child of the overlay
+        frame = Gtk.Frame()
+        frame.set_overflow(Gtk.Overflow.HIDDEN)
+        frame.add_css_class('note-card')
+        frame.add_css_class(f'note-color-{note.color}-card')
+        self._frame = frame
 
         # Vertical layout inside the frame
         outer = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
@@ -112,18 +117,38 @@ class NoteCard(Gtk.Frame):
 
             outer.append(more_bar)
 
-        self.set_child(outer)
+        frame.set_child(outer)
+        self.set_child(frame)
+
+        # Checkmark overlay (top-right corner, hidden by default)
+        self._check = Gtk.Image.new_from_icon_name('object-select-symbolic')
+        self._check.add_css_class('note-card-check')
+        self._check.set_halign(Gtk.Align.END)
+        self._check.set_valign(Gtk.Align.START)
+        self._check.set_margin_top(8)
+        self._check.set_margin_end(8)
+        self._check.set_visible(False)
+        self.add_overlay(self._check)
 
         # Click gesture
         click = Gtk.GestureClick()
         click.connect('released', self._on_click)
         self.add_controller(click)
 
+        # Long-press gesture
+        long_press = Gtk.GestureLongPress()
+        long_press.set_delay_factor(1.0)  # default ~600ms
+        long_press.connect('pressed', self._on_long_press)
+        self.add_controller(long_press)
+
         self._setup_context_menu()
 
     def _on_click(self, gesture, n_press, x, y):
         if n_press == 1:
             self.emit('activated', self._note.id)
+
+    def _on_long_press(self, gesture, x, y):
+        self.emit('long-pressed', self._note.id)
 
     def _setup_context_menu(self):
         menu = Gio.Menu()
@@ -175,3 +200,17 @@ class NoteCard(Gtk.Frame):
     @property
     def note_id(self):
         return self._note.id
+
+    @property
+    def selected(self):
+        return self._selected
+
+    @selected.setter
+    def selected(self, value):
+        self._selected = value
+        if value:
+            self._frame.add_css_class('note-card-selected')
+            self._check.set_visible(True)
+        else:
+            self._frame.remove_css_class('note-card-selected')
+            self._check.set_visible(False)

@@ -4,7 +4,7 @@ import gi
 gi.require_version('Gtk', '4.0')
 gi.require_version('Adw', '1')
 
-from gi.repository import Adw, Gio, GLib, GObject, Gtk
+from gi.repository import Adw, Gdk, Gio, GLib, GObject, Gtk
 
 from betternotes.constants import APP_ID
 from betternotes.note_card import NoteCard
@@ -20,12 +20,17 @@ class MainWindow(Adw.ApplicationWindow):
         self._showing_trash = False
         self._search_timeout_id = None
 
+        # Selection mode state
+        self._selection_mode = False
+        self._selected_ids = set()
+
         self.set_title('BetterNotes')
         self.set_default_size(900, 650)
         self.set_icon_name(APP_ID)
 
         self._build_ui()
         self._connect_signals()
+        self._setup_key_controller()
         self._refresh_notes()
         self._refresh_tags()
 
@@ -33,18 +38,18 @@ class MainWindow(Adw.ApplicationWindow):
         # Main layout
         self._toolbar_view = Adw.ToolbarView()
 
-        # Header bar
-        header = Adw.HeaderBar()
+        # --- Normal header bar ---
+        self._header = Adw.HeaderBar()
 
         # Search button
         self._search_btn = Gtk.ToggleButton(icon_name='system-search-symbolic')
         self._search_btn.connect('toggled', self._on_search_toggled)
-        header.pack_start(self._search_btn)
+        self._header.pack_start(self._search_btn)
 
         # View switcher (Notes / Trash)
         self._view_stack = Gtk.Stack()
         self._view_switcher = Gtk.StackSwitcher(stack=self._view_stack)
-        header.set_title_widget(self._view_switcher)
+        self._header.set_title_widget(self._view_switcher)
 
         # Menu
         menu = Gio.Menu()
@@ -56,9 +61,27 @@ class MainWindow(Adw.ApplicationWindow):
             icon_name='open-menu-symbolic',
             menu_model=menu,
         )
-        header.pack_end(menu_btn)
+        self._header.pack_end(menu_btn)
 
-        self._toolbar_view.add_top_bar(header)
+        self._toolbar_view.add_top_bar(self._header)
+
+        # --- Selection header bar (hidden by default) ---
+        self._selection_header = Adw.HeaderBar()
+        self._selection_header.set_visible(False)
+        self._selection_header.set_show_back_button(False)
+
+        cancel_btn = Gtk.Button(label='Cancel')
+        cancel_btn.connect('clicked', lambda b: self._exit_selection_mode())
+        self._selection_header.pack_start(cancel_btn)
+
+        self._selection_count_label = Gtk.Label(label='0 selected')
+        self._selection_header.set_title_widget(self._selection_count_label)
+
+        select_all_btn = Gtk.Button(label='Select All')
+        select_all_btn.connect('clicked', lambda b: self._select_all())
+        self._selection_header.pack_end(select_all_btn)
+
+        self._toolbar_view.add_top_bar(self._selection_header)
 
         # Search bar
         self._search_bar = Gtk.SearchBar()
@@ -200,7 +223,56 @@ class MainWindow(Adw.ApplicationWindow):
         overlay.add_overlay(fab)
         self._fab = fab
 
+        # Selection action bar (hidden by default, shown as bottom overlay)
+        self._selection_bar = Gtk.Box(
+            orientation=Gtk.Orientation.HORIZONTAL,
+            spacing=8,
+        )
+        self._selection_bar.add_css_class('selection-action-bar')
+        self._selection_bar.set_halign(Gtk.Align.CENTER)
+        self._selection_bar.set_valign(Gtk.Align.END)
+        self._selection_bar.set_margin_bottom(24)
+        self._selection_bar.set_visible(False)
+
+        # Notes view action: Move to Trash
+        self._sel_trash_btn = Gtk.Button(label='Move to Trash')
+        self._sel_trash_btn.add_css_class('destructive-action')
+        self._sel_trash_btn.add_css_class('pill')
+        self._sel_trash_btn.connect('clicked', self._on_bulk_trash)
+        self._selection_bar.append(self._sel_trash_btn)
+
+        # Trash view actions: Restore, Delete Permanently
+        self._sel_restore_btn = Gtk.Button(label='Restore')
+        self._sel_restore_btn.add_css_class('suggested-action')
+        self._sel_restore_btn.add_css_class('pill')
+        self._sel_restore_btn.connect('clicked', self._on_bulk_restore)
+        self._selection_bar.append(self._sel_restore_btn)
+
+        self._sel_delete_btn = Gtk.Button(label='Delete Permanently')
+        self._sel_delete_btn.add_css_class('destructive-action')
+        self._sel_delete_btn.add_css_class('pill')
+        self._sel_delete_btn.connect('clicked', self._on_bulk_delete)
+        self._selection_bar.append(self._sel_delete_btn)
+
+        overlay.add_overlay(self._selection_bar)
+
         self.set_content(overlay)
+
+    def _setup_key_controller(self):
+        key_ctrl = Gtk.EventControllerKey()
+        key_ctrl.connect('key-pressed', self._on_key_pressed)
+        self.add_controller(key_ctrl)
+
+    def _on_key_pressed(self, controller, keyval, keycode, state):
+        if keyval == Gdk.KEY_Escape and self._selection_mode:
+            self._exit_selection_mode()
+            return True
+        if (keyval == Gdk.KEY_a
+                and state & Gdk.ModifierType.CONTROL_MASK
+                and self._selection_mode):
+            self._select_all()
+            return True
+        return False
 
     def _connect_signals(self):
         self._app.connect('note-changed', self._on_note_signal)
@@ -239,9 +311,182 @@ class MainWindow(Adw.ApplicationWindow):
     def _on_view_changed(self, stack, pspec):
         is_trash = stack.get_visible_child_name() == 'trash'
         self._showing_trash = is_trash
+        if self._selection_mode:
+            self._exit_selection_mode()
         self._fab.set_visible(not is_trash)
         if is_trash:
             self._refresh_trash()
+
+    # --- Selection mode ---
+
+    def _enter_selection_mode(self, first_note_id=None):
+        if self._selection_mode:
+            return
+        self._selection_mode = True
+        self._selected_ids = set()
+        if first_note_id:
+            self._selected_ids.add(first_note_id)
+
+        # Swap headers
+        self._header.set_visible(False)
+        self._selection_header.set_visible(True)
+
+        # Swap FAB / action bar
+        self._fab.set_visible(False)
+        self._selection_bar.set_visible(True)
+
+        # Show correct action buttons
+        self._sel_trash_btn.set_visible(not self._showing_trash)
+        self._sel_restore_btn.set_visible(self._showing_trash)
+        self._sel_delete_btn.set_visible(self._showing_trash)
+
+        self._update_selection_visuals()
+
+    def _exit_selection_mode(self):
+        if not self._selection_mode:
+            return
+        self._selection_mode = False
+        self._selected_ids.clear()
+
+        # Swap headers back
+        self._header.set_visible(True)
+        self._selection_header.set_visible(False)
+
+        # Swap action bar / FAB back
+        self._selection_bar.set_visible(False)
+        self._fab.set_visible(not self._showing_trash)
+
+        # Clear visual selection on all cards
+        self._clear_card_selection(self._notes_grid)
+        self._clear_card_selection(self._trash_grid)
+
+    def _clear_card_selection(self, grid):
+        child = grid.get_first_child()
+        while child:
+            card = child.get_child() if isinstance(child, Gtk.FlowBoxChild) else child
+            if isinstance(card, NoteCard):
+                card.selected = False
+            child = child.get_next_sibling()
+
+    def _toggle_card_selection(self, note_id):
+        if note_id in self._selected_ids:
+            self._selected_ids.discard(note_id)
+        else:
+            self._selected_ids.add(note_id)
+
+        if not self._selected_ids:
+            self._exit_selection_mode()
+            return
+
+        self._update_selection_visuals()
+
+    def _select_all(self):
+        grid = self._trash_grid if self._showing_trash else self._notes_grid
+        child = grid.get_first_child()
+        while child:
+            card = child.get_child() if isinstance(child, Gtk.FlowBoxChild) else child
+            if isinstance(card, NoteCard):
+                self._selected_ids.add(card.note_id)
+            child = child.get_next_sibling()
+        self._update_selection_visuals()
+
+    def _update_selection_visuals(self):
+        count = len(self._selected_ids)
+        self._selection_count_label.set_label(
+            f'{count} selected'
+        )
+        # Enable/disable action buttons
+        has_selection = count > 0
+        self._sel_trash_btn.set_sensitive(has_selection)
+        self._sel_restore_btn.set_sensitive(has_selection)
+        self._sel_delete_btn.set_sensitive(has_selection)
+
+        # Update card visuals in the active grid
+        grid = self._trash_grid if self._showing_trash else self._notes_grid
+        child = grid.get_first_child()
+        while child:
+            card = child.get_child() if isinstance(child, Gtk.FlowBoxChild) else child
+            if isinstance(card, NoteCard):
+                card.selected = card.note_id in self._selected_ids
+            child = child.get_next_sibling()
+
+    def _on_card_activated_or_select(self, card, note_id):
+        """Handle click on a card — open note normally, or toggle selection in selection mode."""
+        if self._selection_mode:
+            self._toggle_card_selection(note_id)
+        else:
+            # Check if Ctrl is held
+            seat = self.get_display().get_default_seat()
+            keyboard = seat.get_keyboard() if seat else None
+            if keyboard:
+                modifiers = keyboard.get_modifier_state()
+                if modifiers & Gdk.ModifierType.CONTROL_MASK:
+                    self._enter_selection_mode(first_note_id=note_id)
+                    return
+            self._app.open_note(note_id)
+
+    def _on_card_long_pressed(self, card, note_id):
+        """Long-press enters selection mode with this card selected."""
+        if not self._selection_mode:
+            self._enter_selection_mode(first_note_id=note_id)
+        else:
+            self._toggle_card_selection(note_id)
+
+    # --- Bulk actions ---
+
+    def _on_bulk_trash(self, btn):
+        ids = set(self._selected_ids)
+        if not ids:
+            return
+        self._app.store.trash_notes(ids)
+        for note_id in ids:
+            self._app.close_note_window(note_id)
+        self._exit_selection_mode()
+        self._app.emit('note-trashed', '')
+        count = len(ids)
+        self._show_toast(
+            f'{count} note{"s" if count != 1 else ""} moved to trash',
+            'Undo', self._undo_bulk_trash, ids,
+        )
+
+    def _undo_bulk_trash(self, note_ids):
+        self._app.store.restore_notes(note_ids)
+        self._app.emit('note-restored', '')
+
+    def _on_bulk_restore(self, btn):
+        ids = set(self._selected_ids)
+        if not ids:
+            return
+        self._app.store.restore_notes(ids)
+        self._exit_selection_mode()
+        self._app.emit('note-restored', '')
+        count = len(ids)
+        self._show_toast(f'{count} note{"s" if count != 1 else ""} restored')
+
+    def _on_bulk_delete(self, btn):
+        ids = set(self._selected_ids)
+        if not ids:
+            return
+        count = len(ids)
+        dialog = Adw.AlertDialog(
+            heading=f'Delete {count} Note{"s" if count != 1 else ""} Permanently?',
+            body='This action cannot be undone.',
+        )
+        dialog.add_response('cancel', 'Cancel')
+        dialog.add_response('delete', 'Delete')
+        dialog.set_response_appearance('delete', Adw.ResponseAppearance.DESTRUCTIVE)
+        dialog.connect('response', self._on_bulk_delete_confirmed, ids)
+        dialog.present(self)
+
+    def _on_bulk_delete_confirmed(self, dialog, response, note_ids):
+        if response == 'delete':
+            self._app.store.delete_notes(note_ids)
+            self._exit_selection_mode()
+            self._app.emit('note-deleted', '')
+            count = len(note_ids)
+            self._show_toast(f'{count} note{"s" if count != 1 else ""} permanently deleted')
+
+    # --- Refresh ---
 
     def _refresh_notes(self):
         # Clear grid
@@ -264,11 +509,24 @@ class MainWindow(Adw.ApplicationWindow):
             return
 
         self._notes_stack.set_visible_child_name('grid')
+        existing_ids = set()
         for note in notes:
             card = NoteCard(note)
-            card.connect('activated', self._on_note_activated)
+            card.connect('activated', self._on_card_activated_or_select)
+            card.connect('long-pressed', self._on_card_long_pressed)
             card.connect('trash-requested', self._on_note_trash_requested)
+            if self._selection_mode and note.id in self._selected_ids:
+                card.selected = True
+            existing_ids.add(note.id)
             self._notes_grid.append(card)
+
+        # Prune selected_ids that no longer exist
+        if self._selection_mode and not self._showing_trash:
+            self._selected_ids &= existing_ids
+            if not self._selected_ids:
+                self._exit_selection_mode()
+            else:
+                self._update_selection_visuals()
 
     def _refresh_trash(self):
         child = self._trash_grid.get_first_child()
@@ -285,11 +543,25 @@ class MainWindow(Adw.ApplicationWindow):
 
         self._trash_stack.set_visible_child_name('grid')
         self._trash_banner.set_visible(True)
+        existing_ids = set()
         for note in trashed:
             card = NoteCard(note, is_trash=True)
+            card.connect('activated', self._on_card_activated_or_select)
+            card.connect('long-pressed', self._on_card_long_pressed)
             card.connect('restore-requested', self._on_note_restore_requested)
             card.connect('delete-requested', self._on_note_delete_requested)
+            if self._selection_mode and note.id in self._selected_ids:
+                card.selected = True
+            existing_ids.add(note.id)
             self._trash_grid.append(card)
+
+        # Prune selected_ids that no longer exist
+        if self._selection_mode and self._showing_trash:
+            self._selected_ids &= existing_ids
+            if not self._selected_ids:
+                self._exit_selection_mode()
+            else:
+                self._update_selection_visuals()
 
     def _refresh_tags(self):
         # Clear tag bar

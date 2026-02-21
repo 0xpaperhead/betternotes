@@ -145,6 +145,40 @@ class NoteStore:
         self._db.execute('DELETE FROM notes WHERE id = ?', (note_id,))
         self._db.commit()
 
+    def trash_notes(self, note_ids):
+        if not note_ids:
+            return
+        placeholders = ','.join('?' * len(note_ids))
+        now = datetime.now().isoformat()
+        self._db.execute(
+            f'UPDATE notes SET trashed_at = ?, updated_at = ? '
+            f'WHERE id IN ({placeholders})',
+            [now, now] + list(note_ids),
+        )
+        self._db.commit()
+
+    def restore_notes(self, note_ids):
+        if not note_ids:
+            return
+        placeholders = ','.join('?' * len(note_ids))
+        now = datetime.now().isoformat()
+        self._db.execute(
+            f'UPDATE notes SET trashed_at = NULL, updated_at = ? '
+            f'WHERE id IN ({placeholders})',
+            [now] + list(note_ids),
+        )
+        self._db.commit()
+
+    def delete_notes(self, note_ids):
+        if not note_ids:
+            return
+        placeholders = ','.join('?' * len(note_ids))
+        self._db.execute(
+            f'DELETE FROM notes WHERE id IN ({placeholders})',
+            list(note_ids),
+        )
+        self._db.commit()
+
     def empty_trash(self):
         self._db.execute('DELETE FROM notes WHERE trashed_at IS NOT NULL')
         self._db.commit()

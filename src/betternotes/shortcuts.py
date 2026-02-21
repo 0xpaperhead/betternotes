@@ -34,6 +34,16 @@ class ShortcutsWindow(Gtk.ShortcutsWindow):
             accelerator='<Control>question',
             visible=True,
         ))
+        general.append(Gtk.ShortcutsShortcut(
+            title='Select All (in selection mode)',
+            accelerator='<Control>a',
+            visible=True,
+        ))
+        general.append(Gtk.ShortcutsShortcut(
+            title='Exit Selection Mode',
+            accelerator='Escape',
+            visible=True,
+        ))
         section.append(general)
 
         # Formatting group
