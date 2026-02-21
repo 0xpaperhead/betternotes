@@ -153,7 +153,7 @@ class BetterNotesApp(Adw.Application):
             developer_name='Souren',
             version=self.version,
             developers=['Souren'],
-            copyright='Copyright 2026 Souren',
+            copyright='Copyright 2026 0xpaperhead',
             license_type=Gtk.License.GPL_3_0,
         )
         about.present(self.get_active_window())
