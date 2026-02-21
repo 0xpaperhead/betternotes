@@ -165,7 +165,7 @@ class BetterNotesApp(Adw.Application):
 
     def _on_preferences(self, action, param):
         from betternotes.preferences import PreferencesWindow
-        win = PreferencesWindow(application=self)
+        win = PreferencesWindow()
         win.present(self.get_active_window())
 
     def _on_shortcuts(self, action, param):

@@ -260,16 +260,19 @@ class MainWindow(Adw.ApplicationWindow):
 
     def _setup_key_controller(self):
         key_ctrl = Gtk.EventControllerKey()
+        key_ctrl.set_propagation_phase(Gtk.PropagationPhase.CAPTURE)
         key_ctrl.connect('key-pressed', self._on_key_pressed)
         self.add_controller(key_ctrl)
 
     def _on_key_pressed(self, controller, keyval, keycode, state):
+        mods = state & Gtk.accelerator_get_default_mod_mask()
         if keyval == Gdk.KEY_Escape and self._selection_mode:
             self._exit_selection_mode()
             return True
         if (keyval == Gdk.KEY_a
-                and state & Gdk.ModifierType.CONTROL_MASK
-                and self._selection_mode):
+                and mods == Gdk.ModifierType.CONTROL_MASK):
+            if not self._selection_mode:
+                self._enter_selection_mode()
             self._select_all()
             return True
         return False
