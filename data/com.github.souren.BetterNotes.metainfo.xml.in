@@ -45,6 +45,17 @@
   </screenshots>
   <content_rating type="oars-1.1" />
   <releases>
+    <release version="0.1.1" date="2026-02-21">
+      <description>
+        <p>Bug fixes and improvements.</p>
+        <ul>
+          <li>Add right-click context menu to delete tags</li>
+          <li>Fix bullet list formatting</li>
+          <li>Fix note selection and keyboard shortcuts</li>
+          <li>Add screenshots to app listing</li>
+        </ul>
+      </description>
+    </release>
     <release version="0.1.0" date="2026-02-21">
       <description>
         <p>Initial release of BetterNotes.</p>

@@ -1,5 +1,5 @@
 name: betternotes
-version: '0.1.0'
+version: '0.1.1'
 summary: Beautiful sticky notes for your Linux desktop
 description: |
   BetterNotes is a full-featured sticky notes application built with GTK4
