@@ -17,6 +17,12 @@ description: |
   - Dark mode support via Libadwaita
   - Keyboard shortcuts
 
+icon: data/icons/hicolor/scalable/apps/com.github.souren.BetterNotes.svg
+title: BetterNotes
+contact: https://github.com/0xpaperhead/betternotes/issues
+issues: https://github.com/0xpaperhead/betternotes/issues
+source-code: https://github.com/0xpaperhead/betternotes
+website: https://github.com/0xpaperhead/betternotes
 grade: stable
 confinement: strict
 base: core24
