@@ -5,15 +5,10 @@ project('betternotes',
 )
 
 gnome = import('gnome')
-python = import('python')
-
-py_installation = python.find_installation('python3')
-
 pkgdatadir = get_option('prefix') / get_option('datadir') / meson.project_name()
 moduledir = pkgdatadir / 'betternotes'
 
 conf = configuration_data()
-conf.set('PYTHON', py_installation.full_path())
 conf.set('VERSION', meson.project_version())
 conf.set('localedir', get_option('prefix') / get_option('localedir'))
 conf.set('pkgdatadir', pkgdatadir)
