@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component type="desktop-application">
-  <id>com.github.souren.BetterNotes</id>
+  <id>com.github.paperhead.BetterNotes</id>
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>GPL-3.0-or-later</project_license>
   <name>BetterNotes</name>
@@ -22,7 +22,7 @@
       <li>Keyboard shortcuts</li>
     </ul>
   </description>
-  <launchable type="desktop-id">com.github.souren.BetterNotes.desktop</launchable>
+  <launchable type="desktop-id">com.github.paperhead.BetterNotes.desktop</launchable>
   <url type="homepage">https://github.com/0xpaperhead/betternotes</url>
   <url type="bugtracker">https://github.com/0xpaperhead/betternotes/issues</url>
   <url type="vcs-browser">https://github.com/0xpaperhead/betternotes</url>
@@ -45,6 +45,16 @@
   </screenshots>
   <content_rating type="oars-1.1" />
   <releases>
+    <release version="0.1.2" date="2026-03-16">
+      <description>
+        <p>Bug fixes:</p>
+        <ul>
+          <li>Fix snap not launching due to broken python shebang from build-time SDK path</li>
+          <li>Fix D-Bus registration by adding session bus slot to snap</li>
+          <li>Rename app ID from com.github.souren to com.github.paperhead</li>
+        </ul>
+      </description>
+    </release>
     <release version="0.1.1" date="2026-02-21">
       <description>
         <p>Bug fixes and improvements.</p>

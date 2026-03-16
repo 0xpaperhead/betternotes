@@ -1,5 +1,5 @@
 name: betternotes
-version: '0.1.1'
+version: '0.1.2'
 summary: Beautiful sticky notes for your Linux desktop
 description: |
   BetterNotes is a full-featured sticky notes application built with GTK4
@@ -17,7 +17,7 @@ description: |
   - Dark mode support via Libadwaita
   - Keyboard shortcuts
 
-icon: data/icons/hicolor/scalable/apps/com.github.souren.BetterNotes.svg
+icon: data/icons/hicolor/scalable/apps/com.github.paperhead.BetterNotes.svg
 title: BetterNotes
 contact: https://github.com/0xpaperhead/betternotes/issues
 issues: https://github.com/0xpaperhead/betternotes/issues
@@ -32,6 +32,12 @@ platforms:
   amd64:
   arm64:
 
+slots:
+  dbus-betternotes:
+    interface: dbus
+    bus: session
+    name: com.github.paperhead.BetterNotes
+
 apps:
   betternotes:
     command: usr/local/bin/betternotes
@@ -44,6 +50,8 @@ apps:
       - wayland
       - x11
       - unity7
+    slots:
+      - dbus-betternotes
 
 parts:
   betternotes:

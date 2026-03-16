@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="data/icons/hicolor/scalable/apps/com.github.souren.BetterNotes.svg" width="128" height="128" alt="BetterNotes icon">
+  <img src="data/icons/hicolor/scalable/apps/com.github.paperhead.BetterNotes.svg" width="128" height="128" alt="BetterNotes icon">
 </p>
 
 <h1 align="center">BetterNotes</h1>
@@ -46,7 +46,7 @@ BetterNotes is a full-featured sticky notes application built with GTK4 and Liba
 ### Flatpak (Recommended)
 
 ```bash
-flatpak-builder --user --install build-flatpak build-aux/flatpak/com.github.souren.BetterNotes.json
+flatpak-builder --user --install build-flatpak build-aux/flatpak/com.github.paperhead.BetterNotes.json
 ```
 
 ### From Source

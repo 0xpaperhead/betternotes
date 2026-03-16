@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schemalist gettext-domain="betternotes">
-  <schema id="com.github.souren.BetterNotes" path="/com/github/souren/BetterNotes/">
+  <schema id="com.github.paperhead.BetterNotes" path="/com/github/paperhead/BetterNotes/">
     <key name="default-color" type="s">
       <default>'yellow'</default>
       <summary>Default note color</summary>

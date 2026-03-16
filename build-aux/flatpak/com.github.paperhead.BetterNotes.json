@@ -1,5 +1,5 @@
 {
-    "app-id": "com.github.souren.BetterNotes",
+    "app-id": "com.github.paperhead.BetterNotes",
     "runtime": "org.gnome.Platform",
     "runtime-version": "46",
     "sdk": "org.gnome.Sdk",
@@ -22,9 +22,8 @@
             "buildsystem": "meson",
             "sources": [
                 {
-                    "type": "git",
-                    "url": "https://github.com/0xpaperhead/betternotes.git",
-                    "tag": "v0.1.1"
+                    "type": "dir",
+                    "path": "../.."
                 }
             ]
         }

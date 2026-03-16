@@ -8,8 +8,9 @@ import locale
 import gettext
 
 VERSION = '@VERSION@'
-pkgdatadir = '@pkgdatadir@'
-localedir = '@localedir@'
+_snap = os.environ.get('SNAP', '')
+pkgdatadir = _snap + '@pkgdatadir@'
+localedir = _snap + '@localedir@'
 
 sys.path.insert(1, pkgdatadir)
 signal.signal(signal.SIGINT, signal.SIG_DFL)

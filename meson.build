@@ -1,5 +1,5 @@
 project('betternotes',
-  version: '0.1.1',
+  version: '0.1.2',
   meson_version: '>= 0.62.0',
   default_options: ['warning_level=2'],
 )
@@ -12,7 +12,7 @@ conf = configuration_data()
 conf.set('VERSION', meson.project_version())
 conf.set('localedir', get_option('prefix') / get_option('localedir'))
 conf.set('pkgdatadir', pkgdatadir)
-conf.set('APP_ID', 'com.github.souren.BetterNotes')
+conf.set('APP_ID', 'com.github.paperhead.BetterNotes')
 
 subdir('data')
 subdir('src')

@@ -22,7 +22,7 @@ class BetterNotesApp(Adw.Application):
         'note-deleted': (GObject.SignalFlags.RUN_LAST, None, (str,)),
     }
 
-    def __init__(self, version='0.1.0', **kwargs):
+    def __init__(self, version='0.1.2', **kwargs):
         super().__init__(
             application_id=APP_ID,
             flags=Gio.ApplicationFlags.DEFAULT_FLAGS,
@@ -46,11 +46,11 @@ class BetterNotesApp(Adw.Application):
         # Try gresource first
         try:
             resources = Gio.resources_lookup_data(
-                '/com/github/souren/BetterNotes/style.css',
+                '/com/github/paperhead/BetterNotes/style.css',
                 Gio.ResourceLookupFlags.NONE,
             )
             if resources:
-                css_provider.load_from_resource('/com/github/souren/BetterNotes/style.css')
+                css_provider.load_from_resource('/com/github/paperhead/BetterNotes/style.css')
                 loaded = True
         except GLib.Error:
             pass
@@ -150,9 +150,9 @@ class BetterNotesApp(Adw.Application):
         about = Adw.AboutDialog(
             application_name='BetterNotes',
             application_icon=APP_ID,
-            developer_name='Souren',
+            developer_name='Paperhead',
             version=self.version,
-            developers=['Souren'],
+            developers=['Paperhead'],
             copyright='Copyright 2026 0xpaperhead',
             license_type=Gtk.License.GPL_3_0,
         )

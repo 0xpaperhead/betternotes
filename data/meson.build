@@ -1,22 +1,22 @@
 install_data(
-  'com.github.souren.BetterNotes.desktop.in',
-  rename: 'com.github.souren.BetterNotes.desktop',
+  'com.github.paperhead.BetterNotes.desktop.in',
+  rename: 'com.github.paperhead.BetterNotes.desktop',
   install_dir: get_option('datadir') / 'applications',
 )
 
 install_data(
-  'com.github.souren.BetterNotes.metainfo.xml.in',
-  rename: 'com.github.souren.BetterNotes.metainfo.xml',
+  'com.github.paperhead.BetterNotes.metainfo.xml.in',
+  rename: 'com.github.paperhead.BetterNotes.metainfo.xml',
   install_dir: get_option('datadir') / 'metainfo',
 )
 
 install_data(
-  'com.github.souren.BetterNotes.gschema.xml',
+  'com.github.paperhead.BetterNotes.gschema.xml',
   install_dir: get_option('datadir') / 'glib-2.0' / 'schemas',
 )
 
 install_data(
-  'icons/hicolor/scalable/apps/com.github.souren.BetterNotes.svg',
+  'icons/hicolor/scalable/apps/com.github.paperhead.BetterNotes.svg',
   install_dir: get_option('datadir') / 'icons' / 'hicolor' / 'scalable' / 'apps',
 )
 

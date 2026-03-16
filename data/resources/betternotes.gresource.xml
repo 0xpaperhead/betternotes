@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gresources>
-  <gresource prefix="/com/github/souren/BetterNotes">
+  <gresource prefix="/com/github/paperhead/BetterNotes">
     <file>style.css</file>
   </gresource>
 </gresources>
